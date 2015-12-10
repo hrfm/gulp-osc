@@ -50,7 +50,7 @@ If receive same OSC message continuously in a short period of time.
 Might your task is not finished.  
 That will be a fatal problem (at least for me).
 
-At that time, write task inner lock function.
+At that time, write task inner lock function.  
 Then, If gulp-osc received new OSC message during run task.  
 gulp-osc calling callback function after current task end.
 
