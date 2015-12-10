@@ -48,9 +48,10 @@ osc.listen("/message","127.0.0.1",10000,function(msg,lock){
 
 If receive same OSC message continuously in a short period of time.  
 Might your task is not finished.  
-At that time you write your task inner lock function.
+That will be a fatal problem (at least for me).
 
-If gulp-osc received new OSC message during run task.  
+At that time, write task inner lock function.
+Then, If gulp-osc received new OSC message during run task.  
 gulp-osc calling callback function after current task end.
 
 I think you should always using lock function.
