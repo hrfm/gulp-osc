@@ -1,4 +1,4 @@
-node-oscsocket
+node-osc
 ==============
 
 <!--
