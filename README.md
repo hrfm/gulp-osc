@@ -37,7 +37,7 @@ var osc = require('gulp-osc');
 osc.listen("/message","127.0.0.1",10000,function(msg,lock){
     lock(
         gulp.src("*.txt")
-            .pipe(gulp.dest("dest));
+            .pipe(gulp.dest("dest"));
     );
 });
 ```
