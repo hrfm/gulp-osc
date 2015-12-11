@@ -25,7 +25,7 @@
   "dependencies": {
     "gulp": "^3.9.0",
     "gulp-util": "^3.0.7",
-    "oscsocket": "0.0.8",
+    "oscsocket": "git://github.com/hrfm/node-oscsocket.git",
     "path": "^0.12.7",
     "through2": "^2.0.0"
   }

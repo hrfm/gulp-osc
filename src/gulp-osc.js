@@ -32,7 +32,8 @@
     return new gutil.PluginError( PLUGIN_NAME, message );
   }
 
-  function sendLog( msg, sendAddr, sendPort ){
+  function sendLog( msg, sendPort, sendAddr ){
+    if( typeof sendAddr === "undefined" ) sendAddr = "0.0.0.0";
     gutil.log(
       gutil.colors.magenta(PLUGIN_NAME),
       gutil.colors.green(msg.toString()),
@@ -53,9 +54,11 @@
   // ------- EXPORTS ----------------------------------------------------------------
 
   var sock = new osc.OSCSocket();
+  sock.useBroadcast();
+
   var sockHash = {};
 
-  var GulpOSC = module.exports = function( message, sendAddr, sendPort ){
+  var GulpOSC = module.exports = function( message, sendPort, sendAddr ){
 
     function transform( file, encoding, callback ){
       callback();
@@ -63,8 +66,8 @@
 
     function flush(callback){
       var msg = new osc.OSCMessage(message);
-      sock.send( msg, sendAddr, sendPort );
-      sendLog( msg, sendAddr, sendPort );
+      sock.send( msg, sendPort, sendAddr );
+      sendLog( msg, sendPort, sendAddr );
       callback();
     }
 
@@ -76,29 +79,39 @@
    * Listen OSC message.
    * 
    * @param oscAddress
-   * @param bindAddress
-   * @param bindPort
+   * @param bindOptions
    * @param callback
    * @returns {*}
    */
-  GulpOSC.listen = function listen( oscAddress, bindAddress, bindPort, callback ){
+  GulpOSC.listen = function listen( oscAddress, bindOptions, callback ){
     
-    var key       = bindAddress+":"+bindPort,
-        latestMsg = undefined,
-        locked    = false;
+    var key, latestMsg = undefined, locked = false;
 
-    if( typeof sockHash[key] === "undefined" ){
-      sockHash[key] = new osc.OSCSocket( bindPort, bindAddress );
+    if( typeof bindOptions === "number" ){
+      key = bindOptions;
+    }else if( typeof bindOptions === "object" && typeof bindOptions.port !== "undefined" ){
+      key = bindOptions.port;
+    }
+    if( typeof key === "undefined" ){
+      key = "_" + new Date().time;
     }
 
-    function lock( stream ){
+    if( typeof sockHash[key] === "undefined" ){
+      sockHash[key] = new osc.OSCSocket();
+      sockHash[key].bind( bindOptions );
+    }
+
+    function lock( stream, callAfterEnd ){
+      if( typeof callAfterEnd === "undefined" ){
+        callAfterEnd = true;
+      }
       locked = true;
       stream.on("end",function(){
         locked = false;
-        if( typeof latestMsg !== "undefined" ){
+        if( typeof latestMsg !== "undefined" && callAfterEnd ){
           callback( latestMsg, lock );
-          latestMsg = undefined;
         }
+        latestMsg = undefined;
       });
     }
 
@@ -123,7 +136,7 @@
    * @param callback
    * @returns {*}
    */
-  GulpOSC.sendFileNames = function sendFileNames( oscAddress, sendAddr, sendPort ){
+  GulpOSC.sendFileNames = function sendFileNames( oscAddress, sendPort, sendAddr ){
 
     var _files = [];
 
@@ -153,8 +166,8 @@
         for( var i=0; i<_files.length; i++ ){
           msg.addArgument("s",_files[i]);
         }
-        sock.send( msg, sendAddr, sendPort );
-        sendLog( msg, sendAddr, sendPort );
+        sock.send( msg, sendPort, sendAddr );
+        sendLog( msg, sendPort, sendAddr );
       }
       callback();
     }

@@ -33,7 +33,6 @@ gulp.src("*.txt")
 
 ```javascript
 var osc = require('gulp-osc');
-
 osc.listen("/message","127.0.0.1",10000,function(msg,lock){
     lock(
         gulp.src("*.txt")
