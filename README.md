@@ -1,5 +1,7 @@
-node-osc
+gulp-osc
 ==============
+
+Using OSC messages with gulp!
 
 <!--
 Getting started
