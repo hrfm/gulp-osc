@@ -3,6 +3,9 @@ gulp-osc
 
 Using OSC messages with gulp!
 
+    gulp で osc つかってなんかやろうとしたらなんか出来た。
+    むしゃくしゃしてやった。いまは(ry
+
 <!--
 Getting started
 -----
@@ -16,26 +19,110 @@ Usage
 
 ### 1. Send OSC message.
 
+    引数で指定した OSC を送ります。それだけです。
+
 ```javascript
 var osc = require('gulp-osc');
 gulp.src("test.txt")
-    .pipe(gulp.dest("dest"))
-    .pipe(osc("/hoge ,i 1","127.0.0.1",10000));
+    .pipe(osc("/hoge ,i 1",10000,"127.0.0.1"));
 ```
 
-### 2. Send src filenames.
+or
+
+```javascript
+gulp.src("test.txt")
+    .pipe(
+    	osc({
+    		"message"     : "/hoge ,i 1",
+    		"sendPort"    : 10000,
+    		"sendAddress" : "127.0.0.1"
+    	})
+    );
+```
+
+### 2. Send src path.
+
+    pipe に入ってきたファイル名を送ります。
+    filter 関数を指定していじってから送ることもできます。
 
 ```javascript
 var osc = require('gulp-osc');
 gulp.src("*.txt")
-    .pipe(osc.sendFileNames("/files","127.0.0.1",10000));
+    .pipe(osc.sendSrcPath(
+    	"/hoge",
+    	12345,
+    	"localhost",
+    	function(path){
+			return path.substr( path.lastIndexOf("/")+1, path.length );
+		}
+	});
 ```
 
-### 3. Listen and run task.
+or
+
+```javascript
+gulp.src("*.txt")
+    .pipe(osc.sendSrcPath({
+		"oscAddress"  : "/hoge",
+		"sendPort"    : 12345,
+		"sendAddress" : "localhost",
+		"filter"      : function(path){
+			return path.substr( path.lastIndexOf("/")+1, path.length );
+		}
+	});
+```
+
+### 3. Build OSCMessage with through2 by yourself.
+
+    完全に自分で好き放題やりたいというあなたに。
+    through2 経由でいろいろいじれます。
+
+    第１引数に through2.obj 関数への参照
+    第２引数に oscMessage が渡されるので
+    transform なり flush なりの中で oscMessage.addArgument すればその内容が送れます。
 
 ```javascript
 var osc = require('gulp-osc');
-osc.listen("/message","127.0.0.1",10000,function(msg,lock){
+gulp.src("*.txt")
+    .pipe(osc.through2(
+    	function(through2,oscMessage){
+    		return through2(
+    			function transform(file,encoding,callback){
+    				// do something.
+    				this.push(file);
+    				callback();
+    			},
+    			function flush(callback){
+    				// do something.
+    				oscMessage.addArgument("i",100);
+    				callback();
+    			}
+    		);
+    	},
+    	{
+			"oscAddress"  : "/hoge",
+			"sendPort"    : 12345,
+			"sendAddress" : "localhost"
+		}
+	});
+```
+
+### 4. Listen and run task.
+
+    OSC送られてきたら処理をしたいという時に使います。
+    指定した port に指定した OSC のアドレスのメッセージがきたら
+    コールバックが実行されるので後はタスクを実行しましょう。
+
+    lock() 関数を使うと、その中で走らせた gulp タスクが終わるまで
+    コールバックを呼ばなくなるので走りまくるみたいなことも防げます。
+
+    lock() 関数の第２引数は、ロック中にメッセージがきちゃった場合
+    終了後もう一回呼ぶかどうかの指定が出来るので
+    false にすると、実行中きたメッセージは無視できます。
+
+```javascript
+var osc = require('gulp-osc');
+osc.listen("/message",10000,function(msg,lock){
     lock(
         gulp.src("*.txt")
             .pipe(gulp.dest("dest"));
