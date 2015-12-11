@@ -17,7 +17,7 @@ Getting started
 Usage
 -----
 
-### 1. Send OSC message.
+### 1. ``osc()`` Send OSC message.
 
     引数で指定した OSC を送ります。それだけです。
 
@@ -40,7 +40,7 @@ gulp.src("test.txt")
     );
 ```
 
-### 2. Send src path.
+### 2. ``osc.sendSrcPath()`` Send src path.
 
     pipe に入ってきたファイル名を送ります。
     filter 関数を指定していじってから送ることもできます。
@@ -72,7 +72,7 @@ gulp.src("*.txt")
 	});
 ```
 
-### 3. Build OSCMessage with through2 by yourself.
+### 3. ``osc.through2()`` Build OSCMessage with through2 by yourself.
 
     完全に自分で好き放題やりたいというあなたに。
     through2 経由でいろいろいじれます。
@@ -107,7 +107,7 @@ gulp.src("*.txt")
 	});
 ```
 
-### 4. Listen and run task.
+### 4. ``osc.listen()`` Listen and run task.
 
     OSC送られてきたら処理をしたいという時に使います。
     指定した port に指定した OSC のアドレスのメッセージがきたら
