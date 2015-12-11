@@ -1,10 +1,7 @@
 gulp-osc
 ==============
 
-Using OSC messages with gulp!
-
-    gulp で osc つかってなんかやろうとしたらなんか出来た。
-    むしゃくしゃしてやった。いまは(ry
+Using OSC with gulp!
 
 <!--
 Getting started
@@ -17,18 +14,7 @@ Getting started
 Usage
 -----
 
-### 1. ``osc.listen()`` Listen and run task.
-
-    OSC送られてきたら処理をしたいという時に使います。
-    指定した port に指定した OSC のアドレスのメッセージがきたら
-    コールバックが実行されるので後はタスクを実行しましょう。
-
-    lock() を使うと、その中で走らせた gulp タスクが終わるまで
-    コールバックを呼ばなくなるので走りまくるみたいなことも防げます。
-
-    また、lock の第２引数で、ロック中にメッセージがきちゃった場合
-    終了後もう一回呼ぶかどうかの指定が出来るようになっているので
-    false にすると、実行中きたメッセージは無視できます。
+### 1. osc.listen()
 
 ```javascript
 var osc = require('gulp-osc');
@@ -52,12 +38,17 @@ At that time, write task inner lock function.
 Then, If gulp-osc received new OSC message during run task.  
 gulp-osc calling callback function after current task end.
 
-I think you should always using lock function.
+    OSC送られてきたら処理をしたいという時に使います。
 
+    lock() を使うと、その中で走らせた gulp タスクが終わるまで
+    コールバックを呼ばなくなるので、タスクが多重に走ることを防ぐ事が出来ます。
+
+    また、lock の第２引数に false を指定すると
+    ロック中に新しいメッセージが来てもそのメッセージは無視します。
 
 ### 2. ``osc()`` Send OSC message.
 
-    引数で指定した OSC を送ります。それだけです。
+    引数で指定した設定で OSC を送信します。
 
 ```javascript
 var osc = require('gulp-osc');
@@ -81,7 +72,7 @@ gulp.src("test.txt")
 ### 3. ``osc.sendSrcPath()`` Send src path.
 
     pipe に入ってきたファイル名を送ります。
-    filter 関数を指定していじってから送ることもできます。
+    filter 関数を指定することで、ファイル名を加工する事もできます。
 
 ```javascript
 var osc = require('gulp-osc');
@@ -117,7 +108,8 @@ gulp.src("*.txt")
 
     第１引数に through2.obj 関数への参照
     第２引数に oscMessage が渡されるので
-    transform なり flush なりの中で oscMessage.addArgument すればその内容が送れます。
+    transform なり flush なりの中で oscMessage.addArgument すれば
+    その内容で送信をする事ができます。
 
 ```javascript
 var osc = require('gulp-osc');
