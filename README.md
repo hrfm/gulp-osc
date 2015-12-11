@@ -22,8 +22,7 @@ Run task when OSC message received.
 var osc = require('gulp-osc');
 osc.listen("/message",10000,function(msg,lock){
     lock(
-        gulp.src("*.txt")
-            .pipe(gulp.dest("dest"));
+        gulp.src("*.txt").pipe(gulp.dest("dest"))
     );
 });
 ```
@@ -40,11 +39,21 @@ At that time, write task inner lock function.
 Then, If gulp-osc received new OSC message during run task.  
 gulp-osc calling callback function after current task end.
 
-    OSC送られてきたら処理をしたいという時に使います。
+If you need ignore message (Don't want to call after task end. ).
+Set false to 2nd argument likes below.
+
+```javascript
+osc.listen("/message",10000,function(msg,lock){
+    lock(
+        gulp.src("*.txt").pipe(gulp.dest("dest")),
+        false
+    );
+});
+```
 
     lock() を使うと、その中で走らせた gulp タスクが終わるまで
     コールバックを呼ばなくなるので、タスクが多重に走ることを防ぐ事が出来ます。
-
+    
     また、lock の第２引数に false を指定すると
     ロック中に新しいメッセージが来てもそのメッセージは無視します。
 
