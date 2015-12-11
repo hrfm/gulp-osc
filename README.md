@@ -16,6 +16,8 @@ Usage
 
 ## ``osc.listen()``
 
+Run task when OSC message received.
+
 ```javascript
 var osc = require('gulp-osc');
 osc.listen("/message",10000,function(msg,lock){
