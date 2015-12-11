@@ -14,7 +14,7 @@ Getting started
 Usage
 -----
 
-### 1. osc.listen()
+## ``osc.listen()``
 
 ```javascript
 var osc = require('gulp-osc');
@@ -46,7 +46,9 @@ gulp-osc calling callback function after current task end.
     また、lock の第２引数に false を指定すると
     ロック中に新しいメッセージが来てもそのメッセージは無視します。
 
-### 2. ``osc()`` Send OSC message.
+## ``osc()``
+
+Send OSC message.
 
     引数で指定した設定で OSC を送信します。
 
@@ -69,7 +71,9 @@ gulp.src("test.txt")
     );
 ```
 
-### 3. ``osc.sendSrcPath()`` Send src path.
+## ``osc.sendSrcPath()``
+
+Send src path.
 
     pipe に入ってきたファイル名を送ります。
     filter 関数を指定することで、ファイル名を加工する事もできます。
@@ -101,7 +105,9 @@ gulp.src("*.txt")
 	});
 ```
 
-### 4. ``osc.through2()`` Build OSCMessage with through2 by yourself.
+## ``osc.through2()``
+
+Build OSCMessage with through2 by yourself.
 
     完全に自分で好き放題やりたいというあなたに。
     through2 経由でいろいろいじれます。
