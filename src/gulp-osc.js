@@ -54,7 +54,7 @@
   // ------- EXPORTS ----------------------------------------------------------------
 
   var sock = new osc.OSCSocket();
-  sock.useBroadcast();
+  sock.setBroadcast(true);
   sock.bind();
 
   var sockHash = {};
@@ -176,24 +176,5 @@
     return th2.obj( transform, flush );
 
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
 }).call(this);
