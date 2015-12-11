@@ -55,6 +55,7 @@
 
   var sock = new osc.OSCSocket();
   sock.useBroadcast();
+  sock.bind();
 
   var sockHash = {};
 

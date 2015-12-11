@@ -10,6 +10,6 @@ osc.listen( "/hoge", 12345, function(msg,lock){
 
 g.task("default",function(){
 	return g.src("test.txt")
-			.pipe( osc.sendFileNames("/hoge",12345) )
-			.pipe( osc("/hoge ,i 10",12345) );
+			.pipe( osc.sendFileNames("/hoge",12345,"192.168.0.255") )
+			.pipe( osc("/hoge ,i 10",12345,"192.168.0.255") );
 });
