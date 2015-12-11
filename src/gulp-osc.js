@@ -173,7 +173,7 @@
       sendAddr   = oscAddress.sendAddress;
       oscAddress = oscAddress.oscAddress;
     }
-    
+
     // ---------------------------------------------------------
 
     var msg     = new osc.OSCMessage();
@@ -221,7 +221,6 @@
 
     return GulpOSC.through2(
       function(t,m){
-        var _files = [];
         return t(
           function ( file, encoding, callback ){
             if( file.isNull() ){
@@ -230,18 +229,11 @@
             if( file.isStream() ){
               return callback();
             }
-            _files.push( filter(file.path) );
+            m.addArgument("s",filter(file.path));
             this.push(file);
             callback();
           },
-          function (callback){
-            if( 0 < _files.length ){
-              for( var i=0; i<_files.length; i++ ){
-                m.addArgument("s",_files[i]);
-              }
-            }
-            callback();
-          }
+          function (callback){ callback(); }
         );
       },
       oscAddress, sendPort, sendAddr

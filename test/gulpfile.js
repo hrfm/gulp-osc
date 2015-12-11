@@ -16,7 +16,6 @@ g.task("default",function(){
 			.pipe(
 				osc.through2(
 					function(through2,msg){
-						var _files = [];
 						return through2(
 							function ( file, encoding, callback ){
 								if( file.isNull() ){
@@ -25,19 +24,11 @@ g.task("default",function(){
 								if( file.isStream() ){
 									return callback();
 								}
-								_files.push( file.path );
+								msg.addArgument("s",file.path);
 								this.push(file);
 								callback();
 							},
-							function( callback ){
-								if( 0 < _files.length ){
-									for( var i=0; i<_files.length; i++ ){
-										// OSCMessage に値を追加.
-										msg.addArgument("s",_files[i]);
-									}
-								}
-								callback();
-							}
+							function( callback ){ callback(); }
 						);
 					},
 					"/hoge", 12345, "192.168.1.255"

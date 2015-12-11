@@ -88,13 +88,13 @@ gulp.src("*.txt")
     	function(through2,oscMessage){
     		return through2(
     			function transform(file,encoding,callback){
-    				// do something.
+    				// for example.
+    				oscMessage.addArgument("s",file.path);
     				this.push(file);
     				callback();
     			},
     			function flush(callback){
     				// do something.
-    				oscMessage.addArgument("i",100);
     				callback();
     			}
     		);
